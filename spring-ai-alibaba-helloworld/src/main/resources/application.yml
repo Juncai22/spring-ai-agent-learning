@@ -6,5 +6,13 @@ spring:
     name: spring-ai-alibaba-helloworld
 
   ai:
-    dashscope:
+    openai:
+      # 火山方舟 Ark - coding 入口（OpenAI 兼容协议）
       api-key: ${AI_DASHSCOPE_API_KEY}
+      base-url: https://ark.cn-beijing.volces.com/api/coding
+      chat:
+        completions-path: /v3/chat/completions
+        options:
+          # deepseek-v4-flash 仅在此 coding 入口下可用
+          model: deepseek-v4-flash
+          temperature: 0.7

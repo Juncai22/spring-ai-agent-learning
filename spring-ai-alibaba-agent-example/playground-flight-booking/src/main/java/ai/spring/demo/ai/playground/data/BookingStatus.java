@@ -16,8 +16,16 @@
 
 package ai.spring.demo.ai.playground.data;
 
+/**
+ * 预订状态枚举。
+ */
 public enum BookingStatus {
 
-	CONFIRMED, COMPLETED, CANCELLED
+	/** 已确认，待出行。 */
+	CONFIRMED,
+	/** 已完成（航班已结束）。 */
+	COMPLETED,
+	/** 已取消。 */
+	CANCELLED
 
 }

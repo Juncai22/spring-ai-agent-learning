@@ -19,10 +19,15 @@ package ai.spring.demo.ai.playground.data;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 客户实体。一个客户可有多笔预订。
+ */
 public class Customer {
 
+	/** 客户姓名（与预订号一起作为身份校验双因子）。 */
 	private String name;
 
+	/** 该客户名下的所有预订。 */
 	private List<Booking> bookings = new ArrayList<>();
 
 	public Customer() {

@@ -24,6 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 
+/**
+ * AI 助手聊天接口 —— 前端与 {@link CustomerSupportAssistant} 之间的 SSE 桥梁。
+ * <p>把 HTTP 请求转成会话 ID + 用户消息，调用助手并以 {@code text/event-stream} 流式返回。
+ */
 @RequestMapping("/api/assistant")
 @RestController
 public class AssistantController {
@@ -34,6 +38,13 @@ public class AssistantController {
 		this.agent = agent;
 	}
 
+	/**
+	 * SSE 流式聊天接口。
+	 * <p>以 {@code text/event-stream} 推送 {@link Flux}，前端逐块接收呈现打字机效果。
+	 * @param chatId      会话 ID（隔离多轮记忆）
+	 * @param userMessage 用户输入
+	 * @return 流式回复
+	 */
 	@RequestMapping(path="/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<String> chat(@RequestParam(name = "chatId") String chatId,
 							 @RequestParam(name = "userMessage") String userMessage) {

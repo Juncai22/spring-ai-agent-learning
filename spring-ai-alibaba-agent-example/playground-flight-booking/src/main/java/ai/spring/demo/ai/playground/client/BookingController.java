@@ -25,6 +25,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
+/**
+ * 预订管理接口 + 首页控制器（非 AI 链路，供前端调试/展示用）。
+ */
+// Note 1: ★ 这个 Controller 和 AI 无关! 它是普通 REST 接口, 给前端展示订单列表用。
+// 对比 AssistantController (AI 链路, 走 ChatClient):
+//   AssistantController → CustomerSupportAssistant → ChatClient → LLM (AI 链路)
+//   BookingController   → FlightBookingService → 直接查内存数据   (普通链路)
+// 两条链路共用 FlightBookingService (业务层), 但 BookingController 不经过 LLM。
 @Controller
 @RequestMapping("/")
 public class BookingController {
@@ -36,12 +44,18 @@ public class BookingController {
 	}
 
 	@RequestMapping("/")
+	/**
+	 * 返回首页视图名（Thymeleaf 模板 index.html）。
+	 */
 	public String index() {
 		return "index";
 	}
 
 	@RequestMapping("/api/bookings")
 	@ResponseBody
+	/**
+	 * 返回全部预订（管理/调试用，前端表格展示）。非 AI 链路。
+	 */
 	public List<BookingDetails> getBookings() {
 		return flightBookingService.getBookings();
 	}

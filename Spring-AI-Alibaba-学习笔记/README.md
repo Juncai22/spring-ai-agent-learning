@@ -1,6 +1,6 @@
 # Spring AI Alibaba 学习笔记
 
-> 从 helloworld 到 Graph 并行编排的完整学习路径
+> 从 helloworld 到综合实战的完整学习路径
 > 每个模块独立成文，含架构图、关键代码、深度解析
 
 ---
@@ -18,7 +18,10 @@ graph LR
     G --> H[graph-example/parallel-node]
     H --> I[llm-auditor]
     I --> J[subagent-assistant]
-    
+    J --> K[four-paradigm-combined]
+    K --> L[rag-agent-example]
+    L --> M[playground-flight-booking]
+
     style A fill:#90EE90
     style B fill:#90EE90
     style C fill:#90EE90
@@ -29,6 +32,9 @@ graph LR
     style H fill:#FF6347
     style I fill:#FF6347
     style J fill:#FF6347
+    style K fill:#9B59B6
+    style L fill:#1ABC9C
+    style M fill:#3498DB
 ```
 
 ## 模块索引
@@ -47,6 +53,8 @@ graph LR
 | 🔴 高级 | 10 | subagent-personal-assistant | [10-subagent-personal-assistant.md](./10-subagent-personal-assistant.md) | Multi-Agent/Supervisor |
 | 🟣 综合 | 11 | four-paradigm-combined | [11-four-paradigm-combined.md](./11-four-paradigm-combined.md) | 四范式合一（自建示例）|
 | 🔵 应用 | 12 | rag-agent-example | [12-rag-agent.md](./12-rag-agent.md) | ReAct + 检索增强 |
+| 🎓 毕业 | 13 | playground-flight-booking | [13-playground-flight-booking.md](./13-playground-flight-booking.md) | 综合实战（ChatClient+Advisor）|
+| 🟦 实战 | 13 | playground-flight-booking | [13-playground-flight-booking.md](./13-playground-flight-booking.md) | ChatClient+Advisor 四合一 |
 
 ## 三大阶段
 
@@ -101,6 +109,7 @@ graph LR
   react-agent:       + 循环 + HITL + Saver
   graph/react:       + Graph (可视化循环)
   parallel-node:     + 并行边 (fan-out/fan-in)
+  flight-booking:    + Advisor 体系四合一 (Memory+RAG+Tool, ChatClient 内置循环)
 
 每一层都是在补偿 LLM 的固有限制:
   没有记忆    → Memory 层
@@ -113,13 +122,13 @@ graph LR
 ## 下一步学习路径
 
 ```
-当前位置: subagent-personal-assistant (Multi-Agent/Supervisor) ✅
+当前位置: playground-flight-booking (综合实战) ✅
    │
    ▼
-第 6 站: rag-agent-example (ReAct + 检索)
-   │
-   ▼
-第 9 站: playground-flight-booking (综合实战)
+候选下一站 (三选一):
+   - MCP 协议           (工具层标准化升级, 笔记体系最大缺口)
+   - Observability      (生产化: trace/metric/监控)
+   - 多模态             (image/audio/video)
 ```
 
 ## 四大 Agent 范式（已集齐）
@@ -158,5 +167,5 @@ Multi-Agent/Supervisor:  主 Agent 调度子 Agent  ← 第10站
 ---
 
 > **文档生成日期**: 2026-07-06
-> **覆盖模块**: 12 个核心模块（含 1 个自建示例）
-> **学习进度**: 基础层 ✅ → 工具层 ✅ → 智能体层 ✅ → 高级范式 ✅ → 综合 ✅ → 应用变体 🟡 (进行中)
+> **覆盖模块**: 13 个核心模块（含 1 个自建示例 + 1 个官方综合实战）
+> **学习进度**: 基础层 ✅ → 工具层 ✅ → 智能体层 ✅ → 高级范式 ✅ → 综合 ✅ → 应用变体 ✅ → 综合实战 ✅

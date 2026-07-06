@@ -16,8 +16,16 @@
 
 package ai.spring.demo.ai.playground.data;
 
+/**
+ * 舱位等级枚举（影响改签/取消费用，对应条款文档）。
+ */
 public enum BookingClass {
 
-	ECONOMY, PREMIUM_ECONOMY, BUSINESS
+	/** 经济舱：改签 $50、取消 $75。 */
+	ECONOMY,
+	/** 超级经济舱：改签 $30、取消 $50。 */
+	PREMIUM_ECONOMY,
+	/** 商务舱：改签免费、取消 $25。 */
+	BUSINESS
 
 }

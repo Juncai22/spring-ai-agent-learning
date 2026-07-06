@@ -19,10 +19,16 @@ package ai.spring.demo.ai.playground.data;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 内存数据库 —— 持有全部客户与预订的简单 POJO 容器。
+ * <p>重启即丢，仅用于演示；生产应换为真实持久化存储。
+ */
 public class BookingData {
 
+	/** 全部客户。 */
 	private List<Customer> customers = new ArrayList<>();
 
+	/** 全部预订（业务操作的真正数据源）。 */
 	private List<Booking> bookings = new ArrayList<>();
 
 	public List<Customer> getCustomers() {

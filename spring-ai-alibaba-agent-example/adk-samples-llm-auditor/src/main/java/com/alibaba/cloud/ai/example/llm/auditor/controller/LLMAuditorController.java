@@ -16,6 +16,21 @@
 
 package com.alibaba.cloud.ai.example.llm.auditor.controller;
 
+// Note 1: ★★★ LLMAuditorController 是 llm-auditor 模块的核心——演示 Reflection 范式 + SequentialAgent 多 Agent 编排。
+//
+// 整体架构 (Reflection 范式):
+//   用户问 → critic Agent (审查+联网搜索) → reviser Agent (按审查意见修订) → 最终答案
+//
+// 三个关键概念:
+//   1. ReactAgent: 你第 6 站学的, 单 Agent + 工具 + 循环
+//   2. SequentialAgent: ★ 新概念! 串行编排多个子 Agent, 按顺序执行
+//   3. ModelHook: Agent 调 LLM 前后的钩子 (CriticAgentHook/ReviserAgentHook)
+//
+// 与第 6 站的区别:
+//   第 6 站: 单 ReactAgent (file_read + file_write 工具)
+//   本站:    SequentialAgent 编排两个 ReactAgent (critic + reviser), 每个有自己的 Hook
+//
+// 这就是 Multi-Agent 协作: 不是「一个 Agent 调多个工具」, 而是「多个 Agent 各司其职, 串联协作」。
 import com.alibaba.cloud.ai.example.llm.auditor.hook.CriticAgentHook;
 import com.alibaba.cloud.ai.example.llm.auditor.hook.ReviserAgentHook;
 import com.alibaba.cloud.ai.example.llm.auditor.tool.WebSearchTool;
@@ -49,6 +64,8 @@ public class LLMAuditorController {
     }
 
     // 你的 Tavily API Key (建议放在配置文件 application.properties 中，通过 @Value 注入)
+    // Note 2: Tavily API Key 从 yml 注入 (search.tavily.api-key=xxx)。
+    // Tavily 是专为 AI 设计的搜索引擎, critic Agent 用它联网查证事实。
     @Value("${search.tavily.api-key}")
     private String tavilyApiKey;
 
@@ -57,64 +74,77 @@ public class LLMAuditorController {
 
     }
 
+    // Note 3: ★ reviserPrompt —— 修订 Agent 的系统提示词。
+    // 这个 prompt 很长, 定义了 reviser 的角色、任务、裁决标准、编辑指引、输出格式、示例。
+    // 核心: 给 reviser 一组「问题+答案+审查发现」, 让它「最小化修改」使答案准确。
+    //
+    // prompt 结构:
+    //   1. 角色: 专业编辑
+    //   2. 任务: 根据审稿人发现, 修订答案
+    //   3. 裁决标准: 准确/不准确/有争议/不支持/不适用
+    //   4. 编辑指引: 每类裁决怎么处理
+    //   5. 输出格式: 修订后的答案 + ---END-OF-EDIT--- 标记
+    //   6. 示例: 2 个 few-shot 例子 (乔治·华盛顿 / 太阳形状)
+    //
+    // ★ ---END-OF-EDIT--- 标记的作用: 让 ReviserAgentHook 知道修订到哪结束, 清理掉标记。
     private static final String reviserPrompt = """
             你是一名专业编辑，为一家高度值得信赖的出版物工作。
             在这个任务中，你会得到一组问题和答案，这些问题和答案将被打印到出版物上。出版物审稿人已经仔细检查了答案文本并提供了发现。
             你的任务是尽量减少对答案文本的修改，使其准确，同时保持整体结构、风格和长度与原文相似。
-            
+
             审稿人已经确定了答案文本中的主张（包括事实和逻辑论点），并使用以下裁决验证了每个主张是否准确：
-            
+
             *准确：在索赔中提供的信息是正确的，完整的，并与所提供的上下文和可靠来源一致。
             *不准确：与提供的上下文和可靠来源相比，索赔中提供的信息包含错误、遗漏或不一致。
             *有争议：可靠和权威的来源提供了关于索赔的相互矛盾的信息，表明对客观信息缺乏明确的一致意见。
             *不支持：尽管您努力搜索，但没有找到可靠的来源来证实索赔中提供的信息。
             *不适用：该声明表达了主观意见、个人信仰，或涉及不需要外部验证的虚构内容。
-            
+
             每一类申索的编辑指引：
-            
+
             *准确的声明：不需要编辑。
             *不准确的说法：如果可能的话，你应该根据审稿人的理由来纠正它们。
             *有争议的观点：你应该尝试提出一个论点的两个（或更多）方面，使答案更平衡。
             *不被支持的观点：如果它们不是答案的中心，你可以省略不被支持的观点。否则，你可能会软化这些说法，或者表示它们是没有根据的。
             *不适用的声明：不需要编辑。
-            
+
             作为最后的手段，你可以省略一个主张，如果他们不是答案的中心，不可能解决。你还应该做必要的修改，以确保修改后的答案是连贯和流畅的。你不应该在回答文本中引入任何新的主张或作出任何新的陈述。您的编辑应该是最小的，并保持整体结构和样式不变。
-            
+
             输出格式:
-            
+
             *如果答案是准确的，你应该输出与你给出的完全相同的答案文本。
             *如果答案不准确，有争议或不支持，那么你应该输出修改后的答案文本。
             *在答案之后，输出一行 ---END-OF-EDIT--- 并停止。
-            
+
             下面是一些关于这项任务的例子：
-            
+
             ===例1 ===
-            
+
             问：谁是美国第一任总统？
-            
+
             答案：乔治·华盛顿是美国的第一任总统。
-            
+
             发现:
-            
+
             *说法1：乔治·华盛顿是美国第一任总统。
             *结论：准确
             *理由：多个可靠来源证实乔治·华盛顿是美国第一任总统。
             *总体结论：准确
             *全面论证：答案准确且完整地回答了问题。
-            
+
             您期望的答复：
-            
+
             乔治·华盛顿是美国第一任总统。
             ---END-OF-EDIT---
-            
+
             ===例2 ===
-            
+
             问题：太阳的形状是什么？
-            
+
             答：太阳呈立方体，非常热。
-            
+
             发现:
-            
+
             *说法1：太阳是立方体的。
             *结论：不准确
             理由：美国国家航空航天局表示，太阳是一个热等离子体球体，所以它不是立方体。它是一个球体。
@@ -123,31 +153,42 @@ public class LLMAuditorController {
             理由：根据我的知识和搜索结果，太阳非常热。
             *总体结论：不准确
             *整体论证：答案说太阳是立方体的，这是不正确的。
-            
+
             您期望的答复：
-            
+
             太阳是球形的，非常热。
             ---END-OF-EDIT---
-            
+
             所有Message中含有问答对和审稿人提供的调查结果：
             """;
 
+    // Note 4: ★ criticAgentPrompt —— 审查 Agent 的系统提示词。
+    // 这个 prompt 定义了 critic 的角色: 调查记者, 批判性思维, 核实信息。
+    //
+    // prompt 结构:
+    //   1. 角色: 专业调查记者
+    //   2. 任务三步骤: 识别主张 → 验证每个主张 → 全面评估
+    //   3. 裁决标准: 准确/不准确/有争议/不支持/不适用
+    //   4. 提示: 可联网搜索 (用 web_search 工具)、可迭代验证
+    //   5. 输出格式: markdown 列表总结验证结果
+    //
+    // ★ critic 有 web_search 工具, 能联网查证; reviser 没有工具, 只根据 critic 的发现修订。
     private static final String criticAgentPrompt= """
             你是一名专业的调查记者，擅长批判性思维和在高度可信的出版物上发表之前核实信息。
             在这个任务中，你会得到一组问题和答案，这些问题和答案将被打印到出版物上。出版物编辑让你仔细检查答案文本。
-            
+
             #你的任务
-            
+
             你的任务包括三个关键步骤：首先，确定答案中出现的所有主张。第二，确定每个索赔的可靠性。最后，提供一个全面的评估。
-            
+
             ##步骤1：识别索赔
-            
+
             仔细阅读提供的答案文本。从答案中提取出每一个明显的主张。主张可以是对世界的事实陈述，也可以是为支持一个观点而提出的逻辑论证。
-            
+
             ##步骤2：验证每个索赔
-            
+
             对于您在步骤1中确定的每个索赔，执行以下操作：
-            
+
             *考虑上下文：考虑原始问题和答案中已经确定的任何其他主张。
             *咨询外部资源：利用你的一般知识和/或在网上搜索，找到支持或反对该主张的证据。目的是咨询可靠和权威的来源。
             *决定裁决：根据您的评估，对索赔作出以下裁决之一：
@@ -157,15 +198,15 @@ public class LLMAuditorController {
             *不支持：尽管您努力搜索，但没有找到可靠的来源来证实索赔中提供的信息。
             *不适用：该声明表达了主观意见、个人信仰，或涉及不需要外部验证的虚构内容。
             *提供理由：对于每一个结论，清楚地解释你的评估背后的理由。参考你所咨询的资料来源或解释为什么选择“不适用”的判决。
-            
+
             步骤3：提供一个全面的评估
-            
+
             在你评估了每一个单独的主张之后，为整个答案文本提供一个总体结论，并为你的总体结论提供一个总体的理由。解释对个别索赔的评估是如何导致你进行整体评估的，以及作为一个整体的答案是否成功地解决了最初的问题。
-            
+
             #提示
-            
+
             你的工作是迭代的。在每一步中，你应该从文本中选择一个或多个声明并验证它们。然后，继续进行下一项或多项索赔。您可以依靠以前的声明来验证当前的声明。
-            
+
             您可以采取各种行动来帮助您进行验证：
             *你可以用自己的知识来验证文本中的信息，注明“基于我的知识…”。然而，非琐碎的事实声明也应该通过其他来源进行验证，比如搜索。高度似是而非或主观的主张可以用你自己的知识来验证。
             *你可能会发现不需要事实核查的信息，并将其标记为“不适用”。
@@ -174,46 +215,70 @@ public class LLMAuditorController {
             *在你的推理中，请参考你迄今为止通过方括号索引收集到的证据。
             *您可以检查上下文，以验证索赔是否与上下文一致。仔细阅读上下文，以确定文本应该遵循的特定用户说明，文本应该忠实于的事实等。
             *你应该在获得所有你需要的信息后对整篇文章得出最后的结论。
-            
+
             #输出格式
-            
+
             输出的最后一个块应该是一个markdown格式的列表，总结了验证结果。对于您验证的每个CLAIM，您应该输出该CLAIM（作为一个独立的语句）、答案文本中相应的部分、判决和证明。
-            
+
             user信息为你需要反复检查的问题：
             """;
 
+    // Note 5: ★★★ 核心接口: /ai/agent —— 触发 Reflection 多 Agent 流程。
     @GetMapping("/agent")
     public String agent(@RequestParam(value = "query", defaultValue = "中国的首都是哪里?") String query){
+        // === 构建 critic Agent (审查者) ===
+        // Note 6: critic Agent 用 ReactAgent (单 Agent + 工具 + 循环)。
+        // 它的工作: 审查答案, 联网搜索验证, 输出审查结论。
         ReactAgent criticAgent = ReactAgent.builder()
                 .name("critic_agent")
                 .description("")
-                .model(chatModel)
-                .instruction(criticAgentPrompt)
-                .tools(WebSearchTool.getFunctionToolCallback(tavilyApiKey))
-                .hooks(new CriticAgentHook())
-                .outputKey("critic_agent_output")
+                .model(chatModel)                                          // LLM 大脑
+                .instruction(criticAgentPrompt)                            // ★ 系统提示词 (角色+任务)
+                .tools(WebSearchTool.getFunctionToolCallback(tavilyApiKey)) // ★ 联网搜索工具
+                .hooks(new CriticAgentHook())                             // ★ 模型钩子 (追加引用)
+                .outputKey("critic_agent_output")                         // ★ 输出存到 state 的哪个 key
                 .build();
 
+        // === 构建 reviser Agent (修订者) ===
+        // Note 7: reviser Agent 也是 ReactAgent, 但没工具 (只根据 critic 的发现修订)。
+        // 它的工作: 读 critic 的审查结论, 修订答案, 输出修订后的文本。
         ReactAgent reviserAgent = ReactAgent.builder()
                 .name("reviser_agent")
                 .description("")
                 .model(chatModel)
-                .instruction(reviserPrompt)
-                .hooks(new ReviserAgentHook())
-                .outputKey("reviser_agent_output")
+                .instruction(reviserPrompt)                               // ★ 系统提示词 (编辑角色)
+                .hooks(new ReviserAgentHook())                            // ★ 模型钩子 (清理结束标记)
+                .outputKey("reviser_agent_output")                        // ★ 输出存到 state 的哪个 key
                 .build();
 
+        // === ★★★ SequentialAgent: 串行编排 critic + reviser ===
+        // Note 8: ★ SequentialAgent 是本模块的核心新概念!
+        // 它把多个子 Agent 按顺序串联: critic 先跑 → 输出传给 reviser → reviser 跑 → 输出最终结果。
+        //
+        // 这就是 Multi-Agent 协作: 不是「一个 Agent 调多个工具」, 而是「多个 Agent 各司其职, 串联协作」。
+        //
+        // SequentialAgent 内部也是个 Graph:
+        //   critic_agent → reviser_agent
+        // (对比第 7/8 站自己画 Graph, SequentialAgent 是「多 Agent 编排」的封装)
         SequentialAgent llmAuditor = SequentialAgent.builder()
                 .name("llm_auditor")
                 .description("评估llm生成的答案，使用Web，并改进响应以确保与真实世界保持一致")
-                .subAgents(List.of(criticAgent,reviserAgent))
+                .subAgents(List.of(criticAgent, reviserAgent))            // ★ 子 Agent 列表 (按顺序执行)
                 .build();
 
         try {
+            // === 执行 SequentialAgent ===
+            // Note 9: llmAuditor.invoke(query) 触发整个流程:
+            //   1. critic 收到 query, 调 LLM + web_search 审查 → 输出存到 state.critic_agent_output
+            //   2. reviser 收到 critic 的输出, 调 LLM 修订 → 输出存到 state.reviser_agent_output
+            //   3. 返回最终 OverAllState (含两个 Agent 的输出)
             Optional<OverAllState> overAllState = llmAuditor.invoke(query);
             OverAllState state = overAllState.get();
             StringBuilder output = new StringBuilder();
             // 访问各个Agent的输出
+            // Note 10: 从 state 取两个 Agent 的输出, 拼成最终返回。
+            // state.value("critic_agent_output", AssistantMessage.class) 按类型取
+            // .ifPresent 因为可能为空 (Agent 没产出)。
             state.value("critic_agent_output", AssistantMessage.class).ifPresent(r -> {
                 output.append("===============critic_agent_ouput============\n")
                         .append("critic_agent_output:    \n")

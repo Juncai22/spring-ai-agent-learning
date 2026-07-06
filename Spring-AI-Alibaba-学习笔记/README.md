@@ -16,6 +16,7 @@ graph LR
     E --> F[react-agent-example]
     F --> G[graph-example/react]
     G --> H[graph-example/parallel-node]
+    H --> I[llm-auditor]
     
     style A fill:#90EE90
     style B fill:#90EE90
@@ -25,6 +26,7 @@ graph LR
     style F fill:#FFA500
     style G fill:#FFA500
     style H fill:#FF6347
+    style I fill:#FF6347
 ```
 
 ## 模块索引
@@ -39,6 +41,7 @@ graph LR
 | 🟠 智能体 | 06 | react-agent-example | [06-react-agent-example.md](./06-react-agent-example.md) | ReAct 智能体 |
 | 🟠 智能体 | 07 | graph-example/react | [07-graph-react.md](./07-graph-react.md) | Graph 实现 ReAct |
 | 🟠 智能体 | 08 | graph-example/parallel-node | [08-graph-parallel-node.md](./08-graph-parallel-node.md) | 并行编排 |
+| 🔴 高级 | 09 | adk-samples-llm-auditor | [09-llm-auditor.md](./09-llm-auditor.md) | Reflection 范式 |
 
 ## 三大阶段
 
@@ -105,11 +108,8 @@ graph LR
 ## 下一步学习路径
 
 ```
-当前位置: parallel-node (并行编排) ✅
+当前位置: llm-auditor (Reflection 范式) ✅
    │
-   ▼
-第 4 站: adk-samples-llm-auditor (Reflection 范式)
-   │       写作 Agent + 审稿 Agent 协作
    ▼
 第 5 站: subagent-personal-assistant (Multi-Agent)
    │       主 Agent 调度子 Agent
@@ -147,5 +147,5 @@ graph LR
 ---
 
 > **文档生成日期**: 2026-07-06
-> **覆盖模块**: 8 个核心模块
-> **学习进度**: 基础层 ✅ → 工具层 ✅ → 智能体层 🟡 (进行中)
+> **覆盖模块**: 9 个核心模块
+> **学习进度**: 基础层 ✅ → 工具层 ✅ → 智能体层 ✅ → 高级范式 🟡 (进行中)

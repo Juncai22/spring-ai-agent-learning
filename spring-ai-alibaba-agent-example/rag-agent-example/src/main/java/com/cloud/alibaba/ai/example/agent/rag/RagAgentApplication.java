@@ -29,6 +29,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author zth9
  * @since 2026-01-22
  */
+// Note 1: Spring Boot 启动类, rag-agent 模块入口。
+// 启动时:
+//   1. 自动装配 ChatModel + EmbeddingModel (DashScope starter 提供)
+//   2. KnowledgeRetrievalTool @PostConstruct 建知识库索引 (抓文档→切块→向量化→存库)
+//   3. RagAgentConfiguration 构建 ragAgent Bean
+//   4. 启动 Tomcat, 暴露 /api/rag/chat 接口
+//
+// 访问: POST /api/rag/chat  body: {"message": "Spring AI 怎么配置?"}
+// 或:  GET /api/rag/chat?message=Spring AI 怎么配置?
+//
+// Agent 会自主决定: 这个问题要不要查知识库 → 查 → 综合 → 回答
 @SpringBootApplication
 public class RagAgentApplication {
 

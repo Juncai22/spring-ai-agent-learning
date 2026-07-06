@@ -46,6 +46,7 @@ graph LR
 | 🔴 高级 | 09 | adk-samples-llm-auditor | [09-llm-auditor.md](./09-llm-auditor.md) | Reflection 范式 |
 | 🔴 高级 | 10 | subagent-personal-assistant | [10-subagent-personal-assistant.md](./10-subagent-personal-assistant.md) | Multi-Agent/Supervisor |
 | 🟣 综合 | 11 | four-paradigm-combined | [11-four-paradigm-combined.md](./11-four-paradigm-combined.md) | 四范式合一（自建示例）|
+| 🔵 应用 | 12 | rag-agent-example | [12-rag-agent.md](./12-rag-agent.md) | ReAct + 检索增强 |
 
 ## 三大阶段
 
@@ -157,5 +158,5 @@ Multi-Agent/Supervisor:  主 Agent 调度子 Agent  ← 第10站
 ---
 
 > **文档生成日期**: 2026-07-06
-> **覆盖模块**: 11 个核心模块（含 1 个自建示例）
-> **学习进度**: 基础层 ✅ → 工具层 ✅ → 智能体层 ✅ → 高级范式 ✅ → 综合 ✅ (四大范式集齐 + 组合)
+> **覆盖模块**: 12 个核心模块（含 1 个自建示例）
+> **学习进度**: 基础层 ✅ → 工具层 ✅ → 智能体层 ✅ → 高级范式 ✅ → 综合 ✅ → 应用变体 🟡 (进行中)

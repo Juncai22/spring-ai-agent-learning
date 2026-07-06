@@ -23,6 +23,9 @@ import java.util.List;
  * @author wangjx
  * @since 2026-02-13
  * */
+// Note 1: EmailInfo 是 SendEmailTool 的入参结构。
+// 三个字段: to (收件人列表), subject (主题), body (正文)。
+// LLM 发邮件时, 从用户自然语言提取收件人、生成主题和正文填进来。
 public class EmailInfo {
     /**
      * 收件人邮箱地址列表

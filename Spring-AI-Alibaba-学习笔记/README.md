@@ -17,6 +17,7 @@ graph LR
     F --> G[graph-example/react]
     G --> H[graph-example/parallel-node]
     H --> I[llm-auditor]
+    I --> J[subagent-assistant]
     
     style A fill:#90EE90
     style B fill:#90EE90
@@ -27,6 +28,7 @@ graph LR
     style G fill:#FFA500
     style H fill:#FF6347
     style I fill:#FF6347
+    style J fill:#FF6347
 ```
 
 ## 模块索引
@@ -42,6 +44,7 @@ graph LR
 | 🟠 智能体 | 07 | graph-example/react | [07-graph-react.md](./07-graph-react.md) | Graph 实现 ReAct |
 | 🟠 智能体 | 08 | graph-example/parallel-node | [08-graph-parallel-node.md](./08-graph-parallel-node.md) | 并行编排 |
 | 🔴 高级 | 09 | adk-samples-llm-auditor | [09-llm-auditor.md](./09-llm-auditor.md) | Reflection 范式 |
+| 🔴 高级 | 10 | subagent-personal-assistant | [10-subagent-personal-assistant.md](./10-subagent-personal-assistant.md) | Multi-Agent/Supervisor |
 
 ## 三大阶段
 
@@ -108,16 +111,22 @@ graph LR
 ## 下一步学习路径
 
 ```
-当前位置: llm-auditor (Reflection 范式) ✅
+当前位置: subagent-personal-assistant (Multi-Agent/Supervisor) ✅
    │
-   ▼
-第 5 站: subagent-personal-assistant (Multi-Agent)
-   │       主 Agent 调度子 Agent
    ▼
 第 6 站: rag-agent-example (ReAct + 检索)
    │
    ▼
 第 9 站: playground-flight-booking (综合实战)
+```
+
+## 四大 Agent 范式（已集齐）
+
+```
+ReAct (第6-7站):        单 Agent + 工具循环
+并行 (第8站):            fan-out/fan-in
+Reflection (第9站):      生成-审查-修订
+Multi-Agent/Supervisor:  主 Agent 调度子 Agent  ← 第10站
 ```
 
 ## 关键概念速查
@@ -147,5 +156,5 @@ graph LR
 ---
 
 > **文档生成日期**: 2026-07-06
-> **覆盖模块**: 9 个核心模块
-> **学习进度**: 基础层 ✅ → 工具层 ✅ → 智能体层 ✅ → 高级范式 🟡 (进行中)
+> **覆盖模块**: 10 个核心模块
+> **学习进度**: 基础层 ✅ → 工具层 ✅ → 智能体层 ✅ → 高级范式 ✅ (四大范式集齐)

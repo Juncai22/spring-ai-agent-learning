@@ -23,6 +23,9 @@ import java.util.List;
  * @author wangjx
  * @since 2026-02-13
  * */
+// Note 1: CalendarInfo 是 CreateCalendarEventTool 的入参结构。
+// 四个字段: title (标题), startTime/endTime (起止时间), attendees (参与者列表)。
+// LLM 创建日历事件时, 会从用户自然语言提取这些字段填进来。
 public class CalendarInfo {
     /**
      * 日历事件的标题

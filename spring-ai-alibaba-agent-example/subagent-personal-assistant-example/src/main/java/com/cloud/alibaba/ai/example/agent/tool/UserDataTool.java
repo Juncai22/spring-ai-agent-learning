@@ -35,8 +35,18 @@ import java.util.function.BiFunction;
  * @author wangjx
  * @since 2026-02-13
  */
+// Note 1: UserDataTool 是「查询用户信息」工具——给 supervisor Agent 用的。
+// supervisor 调度邮件/日历前, 可能需要查用户邮箱地址 (按用户名或部门查)。
+//
+// implements BiFunction<UserInfo, ToolContext, String>:
+//   入参 UserInfo (含 userName 或 departmentName 作为查询条件)
+//   返回 String (匹配的用户列表 JSON)
+//
+// 数据来源: 静态内存列表 USER_INFO_LIST (mock 数据, 生产应查 DB)。
 public class UserDataTool implements BiFunction<UserInfo, ToolContext, String> {
 
+    // Note 2: ★ mock 用户数据。static 块在类加载时初始化, 模拟数据库里的用户表。
+    // 三个用户: 张三/李四 (研发部), 王五 (设计团队)。
     private static final List<UserInfo> USER_INFO_LIST = new ArrayList<>();
 
     static {
@@ -62,6 +72,7 @@ public class UserDataTool implements BiFunction<UserInfo, ToolContext, String> {
 
     @Override
     public String apply(UserInfo userInfo, ToolContext toolContext) {
+        // Note 3: ★ 优先按用户名查。userName.contains 模糊匹配, 支持中英文。
         String userName = userInfo.getUserName();
 
         if (StringUtils.hasLength(userName)) {
@@ -71,6 +82,7 @@ public class UserDataTool implements BiFunction<UserInfo, ToolContext, String> {
                 return String.format("Available user list for %s", str);
             }
         }
+        // Note 4: 用户名没匹配, 再按部门查。返回该部门所有用户。
         String department = userInfo.getDepartmentName();
 
         if (StringUtils.hasLength(department)) {
@@ -80,9 +92,12 @@ public class UserDataTool implements BiFunction<UserInfo, ToolContext, String> {
                 return String.format("Available user list for %s", str);
             }
         }
-        return "";
+        return "";  // 都没匹配, 返回空串
     }
 
+    // Note 5: ★ 工具名 "get_user_email_tool"。
+    // description 写得很详细: "通过用户名查邮箱, 或按部门查所有用户名"。
+    // 这个描述决定了 supervisor 何时调它——supervisor 看到这个描述才知道「要查邮箱找这个工具」。
     public ToolCallback toolCallback() {
         return FunctionToolCallback.builder("get_user_email_tool", this)
                 .description("You can provide the functionality to retrieve a user's email address by their username, and to obtain all user names within a department by specifying the department name.")

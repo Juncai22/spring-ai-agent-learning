@@ -22,6 +22,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author wangjx
  * @since 2026-02-13
  */
+// Note 1: Spring Boot 启动类, subagent-personal-assistant 模块入口。
+// 启动时:
+//   1. 自动装配 DashScopeChatModel
+//   2. 触发 AgentConfig, 构建 supervisorAgent + calendarAgent + emailAgent
+//   3. 启动 Tomcat, 暴露 PersonalAssistantController 的 /react/agent/supervisorAgent 接口
+//
+// 访问: GET /react/agent/supervisorAgent?query=帮我查张三邮箱并发邮件&threadId=t1
+// 会触发: supervisor 调 get_user_email_tool 查邮箱 → 调 email_agent 发邮件 (触发 HITL 暂停)
 @SpringBootApplication
 public class SubAgentPersonalAssistantApplication {
     public static void main(String[] args) {

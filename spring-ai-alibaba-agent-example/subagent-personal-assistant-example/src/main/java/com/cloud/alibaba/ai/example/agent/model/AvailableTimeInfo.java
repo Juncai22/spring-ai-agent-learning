@@ -23,6 +23,9 @@ import java.util.List;
  * @author wangjx
  * @since 2026-02-13
  * */
+// Note 1: AvailableTimeInfo 是 AvailableTimeSlotsTool 的入参结构。
+// 三个字段: date (日期), durationMinutes (时长分钟), attendees (参与者)。
+// LLM 查可用时段时, 用 date 等查询某天有哪些空闲时间。
 public class AvailableTimeInfo {
     /**
      * 日期信息，表示可用时间的具体日期

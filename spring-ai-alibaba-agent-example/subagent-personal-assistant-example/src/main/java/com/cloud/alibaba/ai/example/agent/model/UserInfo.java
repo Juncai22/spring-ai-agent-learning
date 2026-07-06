@@ -21,17 +21,21 @@ package com.cloud.alibaba.ai.example.agent.model;
  * @author wangjx
  * @since 2026-02-13
  * */
+// Note 1: UserInfo 是 UserDataTool 的入参/返回结构。
+// 三个字段: userName (用户名), email (邮箱), departmentName (部门)。
+// UserDataTool 用它查询用户信息——可按用户名或部门筛选。
+// 这个类会被 Spring AI 反射生成 JSON Schema, LLM 据此填参数。
 public class UserInfo {
     /**
      * 用户名称
      */
     private String userName;
-    
+
     /**
      * 用户邮箱
      */
     private String email;
-    
+
     /**
      * 部门名称
      */

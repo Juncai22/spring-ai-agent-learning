@@ -43,6 +43,7 @@
 		<module>adk-samples-llm-auditor</module>
 		<module>voice-agent-dashscope-sdk-example</module>
 		<module>voice-agent-example</module>
+		<module>four-paradigm-combined-example</module>
 	</modules>
 
 	<build>

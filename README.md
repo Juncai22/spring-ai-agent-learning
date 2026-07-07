@@ -8,6 +8,24 @@
 
 [English](./README-en.md) | 中文
 
+## 关于本仓库（个人学习版）
+
+> 这是我在 [spring-ai-alibaba](https://github.com/alibaba/spring-ai-alibaba) 官方示例仓库基础上的**个人学习与注释版**，用于系统学习 Spring AI 与 Spring AI Alibaba 的各种用法和最佳实践。
+
+本仓库在原项目的基础上做了以下**个人学习层面的增强**：
+
+- 📝 **大量中文注释**：在源码（包括 Controller、Service、Configuration、Graph 节点、Advisor、Tool Calling、RAG 等核心类）中添加了较为详尽的中文注释，帮助理解每一步的意图、关键参数与调用链路。
+- 📒 **学习笔记**：在部分模块下附带了 `notes/` 或 `学习笔记.md`，记录学习过程中的**踩坑记录、关键知识点总结、与官方文档的差异、个人理解**等内容。
+- 🧪 **本地验证**：所有跑通过的示例都附带实际运行结果、请求/响应样例，方便回看。
+- 🗂 **结构化整理**：对模块按主题（Chat / RAG / Agent / MCP / Graph / Multimodal / Observability 等）做了归类与索引。
+- 🧩 **个人新增的综合模块**：例如 [`spring-ai-alibaba-agent-example/four-paradigm-combined-example`](./spring-ai-alibaba-agent-example/four-paradigm-combined-example/README.md) —— **「四范式合一」** 示例（`ReAct + 并行 + Reflection + Supervisor`），把四种 Agent 范式在同一个"智能内容创作系统"中协同跑通，作为阶段性学习的小综合。
+
+### 学习节奏（个人记录）
+
+> ⏱ **预估约 3 天时间能把主线程学完**（Hello World → Chat / Tool Calling → ReAct / Reflection / Supervisor / ParallelNode → Graph / Playground 综合实战），期间每个核心节点都会留下注释和笔记。
+
+> 如果你只是想查看官方示例本身，请直接访问上游仓库；本仓库更偏向**"带着注释的学习版"**，适合和我一样正在系统学习 Spring AI 生态的同学参考。
+
 ## 介绍
 
 此仓库中包含许多 Example 模块项目来介绍 Spring AI 和 Spring AI Alibaba 从基础到高级的各种用法和 AI 项目的最佳实践。

@@ -1,5 +1,7 @@
 # Spring AI Alibaba Examples
 
+学Spring AI
+
 > Spring AI Alibaba Repo: https://github.com/alibaba/spring-ai-alibaba
 >
 > Spring AI Alibaba Website:  https://java2ai.com

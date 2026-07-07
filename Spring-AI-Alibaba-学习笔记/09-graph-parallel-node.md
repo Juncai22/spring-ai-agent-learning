@@ -1,6 +1,6 @@
-# 模块八：graph-example/parallel-node —— 并行编排
+﻿# 模块九：graph-example/parallel-node —— 并行编排
 
-> [← 返回索引](./README.md) | [← 上一模块：graph-example/react](./07-graph-react.md)
+> [← 返回索引](./README.md) | [← 上一模块：graph-example/react](./08-graph-react.md)
 
 ---
 
@@ -124,7 +124,7 @@ public StateGraph parallelNodeGraph(ChatClient.Builder chatClientBuilder) {
 }
 ```
 
-**与第7站对比**：第7站用 `ReactAgent.builder()` 预制图（黑盒），本站用 `StateGraph.addNode/edge` 自己画（白盒）。
+**与第8站对比**：第8站用 `ReactAgent.builder()` 预制图（黑盒），本站用 `StateGraph.addNode/edge` 自己画（白盒）。
 
 ### Principle：并行的三个核心问题
 
@@ -336,7 +336,7 @@ public Flux<ServerSentEvent<GraphProcess.ChatMessage>> expand(
 ```
 
 **流式 vs 一次性**：
-- 第7站 `compiledGraph.invoke()` → 一次性返回最终结果
+- 第8站 `compiledGraph.invoke()` → 一次性返回最终结果
 - 本站 `compiledGraph.stream()` → 流式返回每个节点的实时输出（SSE）
 
 ## 四、代码逐行解析（DispatcherNode）

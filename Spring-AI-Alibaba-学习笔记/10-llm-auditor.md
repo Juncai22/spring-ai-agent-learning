@@ -1,6 +1,6 @@
-# 模块九：adk-samples-llm-auditor —— Reflection 范式
+﻿# 模块十：adk-samples-llm-auditor —— Reflection 范式
 
-> [← 返回索引](./README.md) | [← 上一模块：graph-example/parallel-node](./08-graph-parallel-node.md)
+> [← 返回索引](./README.md) | [← 上一模块：graph-example/parallel-node](./09-graph-parallel-node.md)
 
 ---
 
@@ -13,8 +13,8 @@ adk-samples-llm-auditor 回答一个核心问题：**如何让 LLM 不只是「�
 ### 1. 三大 Agent 范式回顾
 
 ```
-ReAct (第6-7站):    单 Agent + 工具, 想→做→看 循环
-并行 (第8站):        fan-out/fan-in, 多分支同时跑
+ReAct (第7-8站):    单 Agent + 工具, 想→做→看 循环
+并行 (第9站):        fan-out/fan-in, 多分支同时跑
 Reflection (本站):   多 Agent 互查, 生成→审查→修订 循环  ← 新的
 ```
 
@@ -28,7 +28,7 @@ LLM 一次生成的内容可能有事实错误、逻辑漏洞。让另一个 LLM
 |------|---------|------|------|
 | Advisor | ChatClient 调 LLM | before/after | MemoryAdvisor |
 | ToolInterceptor | 工具调用 | interceptToolCall | LogToolInterceptor |
-| HumanInTheLoopHook | Agent 内部 (审批) | approvalOn | react-agent 第6站 |
+| HumanInTheLoopHook | Agent 内部 (审批) | approvalOn | react-agent 第7站 |
 | **ModelHook** | **Agent 内部调 LLM** | **beforeModel/afterModel** | **本站 CriticAgentHook** |
 
 四种本质都是「洋葱模型」——请求前/响应后插入处理，只是层级不同。
@@ -116,7 +116,7 @@ graph LR
     style reviser fill:#87CEEB
 ```
 
-对比第 7/8 站自己用 `StateGraph.addNode/edge` 画图，**SequentialAgent 是「多 Agent 串联」的封装**——你只管给子 Agent 列表，框架自动串联。子 Agent 之间通过 `OverAllState` 传递数据（outputKey）。
+对比第 8/9 站自己用 `StateGraph.addNode/edge` 画图，**SequentialAgent 是「多 Agent 串联」的封装**——你只管给子 Agent 列表，框架自动串联。子 Agent 之间通过 `OverAllState` 传递数据（outputKey）。
 
 ### How：ReactAgent 的新配置项
 
@@ -133,7 +133,7 @@ ReactAgent criticAgent = ReactAgent.builder()
     .build();
 ```
 
-| 配置 | 作用 | 第6站有吗 |
+| 配置 | 作用 | 第7站有吗 |
 |------|------|----------|
 | `.instruction(prompt)` | 系统提示词，定义 Agent 角色 | ❌ 新 |
 | `.hooks(ModelHook)` | 模型调用前后的钩子 | ✅ (HITL Hook) |
@@ -256,7 +256,7 @@ public String agent(@RequestParam String query) {
 
 ## 五、与前面模块的对比
 
-| 维度 | 第6站 react-agent | 第8站 parallel-node | 本站 llm-auditor |
+| 维度 | 第7站 react-agent | 第9站 parallel-node | 本站 llm-auditor |
 |------|-------------------|---------------------|------------------|
 | 范式 | ReAct | 并行 | Reflection |
 | Agent 数 | 1 个 | 4 个节点（非 Agent）| **2 个 Agent** |

@@ -1,6 +1,6 @@
-# 模块十一：four-paradigm-combined —— 四范式合一示例
+﻿# 模块十二：four-paradigm-combined —— 四范式合一示例
 
-> [← 返回索引](./README.md) | [← 上一模块：subagent-personal-assistant](./10-subagent-personal-assistant.md)
+> [← 返回索引](./README.md) | [← 上一模块：subagent-personal-assistant](./11-subagent-personal-assistant.md) | [下一模块：rag-example →](./13-rag-example.md)
 
 ---
 
@@ -13,10 +13,10 @@
 ## 二、背景知识：四大范式是正交积木
 
 ```
-ReAct (第6-7站):        单 Agent 内部的「想-做-看」循环      (循环维度)
-并行 (第8站):            多分支同时执行                       (并发维度)
-Reflection (第9站):      生成-审查-修订                       (质量维度)
-Supervisor (第10站):     主 Agent 调度子 Agent                (分工维度)
+ReAct (第7-8站):        单 Agent 内部的「想-做-看」循环      (循环维度)
+并行 (第9站):            多分支同时执行                       (并发维度)
+Reflection (第10站):      生成-审查-修订                       (质量维度)
+Supervisor (第11站):     主 Agent 调度子 Agent                (分工维度)
 ```
 
 **四个维度相互独立，可任意组合**。本例同时使用全部四个：
@@ -138,7 +138,7 @@ public class WebSearchTool implements BiFunction<Map<String, Object>, ToolContex
 }
 ```
 
-**为什么两个工具代表并行**：research_agent 同时挂载这两个工具，LLM 在一次决策中可以同时返回两个 `tool_calls`（web_search + knowledge_search），框架**并行执行**它们。这是「单 Agent 内的多工具并行」——区别于第8站 graph 的「跨节点并行 fan-out/fan-in」，但本质都是并发执行。
+**为什么两个工具代表并行**：research_agent 同时挂载这两个工具，LLM 在一次决策中可以同时返回两个 `tool_calls`（web_search + knowledge_search），框架**并行执行**它们。这是「单 Agent 内的多工具并行」——区别于第9站 graph 的「跨节点并行 fan-out/fan-in」，但本质都是并发执行。
 
 ### 2. 核心配置：CombinedAgentConfig（四范式合一）
 
@@ -183,7 +183,7 @@ private static final String SUPERVISOR_PROMPT = """
         """;
 ```
 
-**这段 prompt 是范式③ Reflection 的关键**：它指导 supervisor 编排「审查-修订-再审查」的循环。第9站 llm-auditor 用 SequentialAgent 固定串联（无循环），本例用 supervisor 的 ReAct 循环驱动 Reflection——**supervisor 看 critic 结果决定要不要再循环**，这是带循环的完整版 Reflection。
+**这段 prompt 是范式③ Reflection 的关键**：它指导 supervisor 编排「审查-修订-再审查」的循环。第10站 llm-auditor 用 SequentialAgent 固定串联（无循环），本例用 supervisor 的 ReAct 循环驱动 Reflection——**supervisor 看 critic 结果决定要不要再循环**，这是带循环的完整版 Reflection。
 
 #### 2.3 research_agent（范式① ReAct + 范式② 并行）
 
@@ -263,22 +263,22 @@ public String create(@RequestParam String query) {
 
 | 范式 | 在哪体现 | 关键代码 | 对应前序模块 |
 |------|---------|---------|-------------|
-| ① ReAct | 每个 Agent 是 ReactAgent | `ReactAgent.builder()` | 第6-7站 |
-| ② 并行 | research_agent 两个工具 | `.tools(webSearch, knowledgeSearch)` | 第8站 |
-| ③ Reflection | supervisor 编排 critic↔reviser | SUPERVISOR_PROMPT 第3-5步 | 第9站 |
-| ④ Supervisor | 子 Agent 当工具 | `AgentTool.getFunctionToolCallback(agent)` | 第10站 |
+| ① ReAct | 每个 Agent 是 ReactAgent | `ReactAgent.builder()` | 第7-8站 |
+| ② 并行 | research_agent 两个工具 | `.tools(webSearch, knowledgeSearch)` | 第9站 |
+| ③ Reflection | supervisor 编排 critic↔reviser | SUPERVISOR_PROMPT 第3-5步 | 第10站 |
+| ④ Supervisor | 子 Agent 当工具 | `AgentTool.getFunctionToolCallback(agent)` | 第11站 |
 
 ## 八、与前面模块的对比
 
 | 模块 | 用的范式 | 子 Agent 关系 | Reflection 循环 |
 |------|---------|-------------|----------------|
-| 第6站 react-agent | ReAct | — | — |
-| 第8站 parallel-node | 并行 | 节点 fan-out/fan-in | — |
-| 第9站 llm-auditor | Reflection | SequentialAgent 固定串联 | ❌ 无循环（一遍过）|
-| 第10站 subagent | Supervisor + ReAct | 子 Agent 当工具 | — |
+| 第7站 react-agent | ReAct | — | — |
+| 第9站 parallel-node | 并行 | 节点 fan-out/fan-in | — |
+| 第10站 llm-auditor | Reflection | SequentialAgent 固定串联 | ❌ 无循环（一遍过）|
+| 第11站 subagent | Supervisor + ReAct | 子 Agent 当工具 | — |
 | **本例** | **四合一** | **子 Agent 当工具** | **✅ 有循环（supervisor 驱动）** |
 
-**本例相比第9站 llm-auditor 的进步**：
+**本例相比第10站 llm-auditor 的进步**：
 - llm-auditor 用 SequentialAgent 固定串联，critic→reviser 跑一遍就结束（无 Reflection 循环）
 - 本例用 supervisor 的 ReAct 循环驱动 Reflection——critic 不通过就回 reviser，**真正实现了 Reflection 循环**
 
@@ -306,7 +306,7 @@ public String create(@RequestParam String query) {
 
 | 形式 | 在哪 | 特点 |
 |------|------|------|
-| 跨节点并行 | 第8站 graph | fan-out/fan-in，多节点同时跑 |
+| 跨节点并行 | 第9站 graph | fan-out/fan-in，多节点同时跑 |
 | 单 Agent 多工具 | 本例 research_agent | LLM 一次调多个 tool_calls |
 
 本例用的是「单 Agent 多工具」的轻量并行，足够演示范式组合。

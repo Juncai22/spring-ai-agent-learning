@@ -60,19 +60,27 @@ public class StuffController {
 			@RequestParam(value = "stuffit", defaultValue = "false") boolean stuffit
 	) {
 
+		// qa-prompt.st 是一个普通 PromptTemplate，里面通常包含 question/context 等占位符。
+		// Controller 不直接拼完整提示词，而是只准备变量，模板结构交给资源文件维护。
 		PromptTemplate promptTemplate = new PromptTemplate(qaPromptResource);
 
 		Map<String, Object> map = new HashMap<>();
+		// question 对应模板里的用户问题占位符，是每次请求都会变化的运行时输入。
 		map.put("question", message);
 
-		// 是否填充 prompt 上下文，以增强大模型回答。
+		// stuffit=true 时，把本地文档作为 context 填进 prompt。
+		// 这就是最朴素的“上下文增强”：还没有向量检索，只是手动指定要塞入哪份文档。
 		if (stuffit) {
 			map.put("context", docsToStuffResource);
 		}
 		else {
+			// 不填 context 时，模型只能依赖自身已有知识回答。
+			// 对比 stuffit=true 的结果，可以直观看到外部上下文对答案准确性的影响。
 			map.put("context", "");
 		}
 
+		// promptTemplate.create(map) 会完成变量替换并生成 Prompt。
+		// 后续 RAG 模块做的事情，可以理解为“自动选择相关文档片段并填入 context”。
 		return chatClient.prompt(promptTemplate.create(map))
 				.stream().content();
 	}

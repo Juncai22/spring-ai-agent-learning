@@ -1,6 +1,6 @@
-# 模块七：graph-example/react —— Graph 实现 ReAct
+﻿# 模块八：graph-example/react —— Graph 实现 ReAct
 
-> [← 返回索引](./README.md) | [← 上一模块：react-agent-example](./06-react-agent-example.md) | [下一模块：graph-example/parallel-node →](./08-graph-parallel-node.md)
+> [← 返回索引](./README.md) | [← 上一模块：react-agent-example](./07-react-agent-example.md) | [下一模块：graph-example/parallel-node →](./09-graph-parallel-node.md)
 
 ---
 
@@ -54,7 +54,7 @@ flowchart TD
     C --> C2[缺点: 要自己画图, 代码多]
 ```
 
-| 维度 | ReactAgent（第6站）| Graph（第7站）|
+| 维度 | ReactAgent（第7站）| Graph（第8站）|
 |------|-------------------|--------------|
 | 可见性 | 黑盒 | 能打印 PlantUML |
 | 可改性 | 改不了节点 | 能加/删/改节点 |
@@ -202,9 +202,9 @@ public class ReactController {
 }
 ```
 
-**与第6站对比**：
-- 第6站：`reactAgent.invokeAndGetOutput(query, config)` → Agent 抽象层
-- 第7站：`compiledGraph.invoke(Map.of("messages", ...))` → Graph 抽象层，能拿 OverAllState
+**与第7站对比**：
+- 第7站：`reactAgent.invokeAndGetOutput(query, config)` → Agent 抽象层
+- 第8站：`compiledGraph.invoke(Map.of("messages", ...))` → Graph 抽象层，能拿 OverAllState
 
 ### Principle：OverAllState 是什么
 
@@ -308,10 +308,10 @@ flowchart LR
 |-----------|---------|
 | preLlm | RAG 注入上下文、内容过滤 |
 | postLlm | 日志、改写响应 |
-| preTool | ★ HITL 审批（react-agent 第6站用的）|
+| preTool | ★ HITL 审批（react-agent 第7站用的）|
 | postTool | 工具结果后处理 |
 
-第6站的 `HumanInTheLoopHook.approvalOn("file_write")` 就挂在 preTool——工具执行前检查要不要暂停审批。
+第7站的 `HumanInTheLoopHook.approvalOn("file_write")` 就挂在 preTool——工具执行前检查要不要暂停审批。
 
 ## 七、关键认知
 
@@ -335,5 +335,5 @@ flowchart LR
 - **循环终止**：`postLlm` 条件边判断 LLM 返回有没有 tool_calls
 - **4 个 Hook 节点**：扩展点，preTool 挂 HITL 审批，preLlm 挂 RAG
 - **OverAllState**：图的共享状态，节点间通过它通信
-- **两种调用**：第6站 `reactAgent.invokeAndGetOutput()`（Agent 抽象）vs 第7站 `compiledGraph.invoke()`（Graph 抽象）
+- **两种调用**：第7站 `reactAgent.invokeAndGetOutput()`（Agent 抽象）vs 第8站 `compiledGraph.invoke()`（Graph 抽象）
 - **PlantUML 打印**：`getAndCompileGraph().getGraph(PLANTUML)` 导出图结构，可渲染可视化

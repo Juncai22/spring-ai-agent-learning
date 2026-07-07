@@ -1,6 +1,6 @@
-# 模块十：subagent-personal-assistant —— Multi-Agent/Supervisor 范式
+﻿# 模块十一：subagent-personal-assistant —— Multi-Agent/Supervisor 范式
 
-> [← 返回索引](./README.md) | [← 上一模块：adk-samples-llm-auditor](./09-llm-auditor.md)
+> [← 返回索引](./README.md) | [← 上一模块：adk-samples-llm-auditor](./10-llm-auditor.md)
 
 ---
 
@@ -38,9 +38,9 @@ supervisor 调 `calendar_agent` 工具时，实际是**运行整个 calendar Rea
 ### 3. 四大范式集齐
 
 ```
-ReAct (第6-7站):        单 Agent + 工具循环
-并行 (第8站):            fan-out/fan-in
-Reflection (第9站):      生成-审查-修订
+ReAct (第7-8站):        单 Agent + 工具循环
+并行 (第9站):            fan-out/fan-in
+Reflection (第10站):      生成-审查-修订
 Multi-Agent/Supervisor:  主 Agent 调度子 Agent  ← 本站
 ```
 
@@ -195,8 +195,8 @@ public Flux supervisorAgentTest(String query, String threadId, String nodeId) {
 }
 ```
 
-**与第6站 react-agent 的区别**：
-- 第6站：`/invoke` + `/feedback` 两个接口
+**与第7站 react-agent 的区别**：
+- 第7站：`/invoke` + `/feedback` 两个接口
 - 本站：单接口 + `nodeId` 判断（首次 vs 恢复）
 
 ### Principle：三种 HITL 审批方式（HITLHelper）
@@ -246,7 +246,7 @@ public ReactAgent reactAgent() {
 
 ## 五、与前面模块的对比
 
-| 维度 | 第6站 react-agent | 第9站 llm-auditor | 本站 subagent |
+| 维度 | 第7站 react-agent | 第10站 llm-auditor | 本站 subagent |
 |------|-------------------|-------------------|---------------|
 | 范式 | ReAct | Reflection | Multi-Agent/Supervisor |
 | Agent 数 | 1 | 2（串联）| **3（主从）** |
@@ -277,6 +277,6 @@ public ReactAgent reactAgent() {
 - **子 Agent 配置**：比普通 Agent 多 `instruction`（描述）+ `inputType`（输入类型）
 - **HITL 审批子 Agent**：审批在「运行子 Agent」这一层，拦住后子 Agent 内部工具不执行
 - **HITLHelper**：封装 approveAll/rejectAll/editTool 三种审批方式
-- **流式 + HITL 二合一**：单接口用 nodeId 区分首次/恢复，比第6站两接口更紧凑
+- **流式 + HITL 二合一**：单接口用 nodeId 区分首次/恢复，比第7站两接口更紧凑
 - **四大范式集齐**：ReAct + 并行 + Reflection + Multi-Agent，后续模块都是它们的组合变体
 - **价值**：复杂任务分工——主管派活给手下，比单 Agent 全干更可控、更专业

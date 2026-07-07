@@ -1,6 +1,6 @@
-# 模块四：chat-memory-example —— 多轮记忆
+﻿# 模块五：chat-memory-example —— 多轮记忆
 
-> [← 返回索引](./README.md) | [← 上一模块：structured-example](./03-structured-example.md) | [下一模块：tool-calling-example →](./05-tool-calling-example.md)
+> [← 返回索引](./README.md) | [← 上一模块：structured-example](./04-structured-example.md) | [下一模块：tool-calling-example →](./06-tool-calling-example.md)
 
 ---
 

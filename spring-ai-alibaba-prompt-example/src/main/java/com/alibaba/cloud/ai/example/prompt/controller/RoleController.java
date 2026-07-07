@@ -61,15 +61,19 @@ public class RoleController {
 			@RequestParam(value = "voice", required = false, defaultValue = "pirate") String voice
 	) {
 
-		// 用户输入
+		// 用户问题单独作为 UserMessage。它代表本轮对话中用户真正提出的问题，
+		// 不应该和系统角色设定混在一个字符串里，否则后续很难复用系统提示词。
 		UserMessage userMessage = new UserMessage(message);
 
-		// 使用 System prompt tmpl
+		// SystemPromptTemplate 会从 classpath:/prompts/system-message.st 读取模板。
+		// 这个模板通常用于定义模型的“角色、语气、边界和回答风格”，属于比用户问题更高优先级的约束。
 		SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemResource);
-		// 填充 System prompt 中的变量值
+		// createMessage 会把模板里的 {name}、{voice} 等占位符替换成运行时参数，
+		// 最终得到一个 SystemMessage。这样提示词主体可以放在资源文件里维护，Controller 只负责传变量。
 		Message systemMessage = systemPromptTemplate.createMessage(Map.of("name", name, "voice", voice));
 
-		// 调用大模型
+		// Prompt 可以同时携带多条 Message。这里把用户问题和渲染后的系统角色设定一起交给模型，
+		// 模型会综合两部分内容生成答案；stream().content() 表示只流式返回文本内容，不暴露完整 ChatResponse。
 		return chatClient.prompt(
 						new Prompt(List.of(
 								userMessage,

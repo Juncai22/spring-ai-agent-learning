@@ -1,6 +1,6 @@
-# 模块十三：playground-flight-booking —— 综合实战（毕业作品）
+﻿# 模块十五：playground-flight-booking —— 综合实战（毕业作品）
 
-> [← 返回索引](./README.md) | [← 上一模块：rag-agent-example](./12-rag-agent.md)
+> [← 返回索引](./README.md) | [← 上一模块：rag-agent-example](./14-rag-agent.md)
 
 ---
 
@@ -185,7 +185,7 @@ public Function<BookingDetailsRequest, BookingDetails> getBookingDetails() {
 ```
 
 **设计要点**：
-- `@Bean + Function + @Description`：第5站学的「方式④ Function Bean」
+- `@Bean + Function + @Description`：第6站学的「方式④ Function Bean」
 - 工具只做转发，业务在 `FlightBookingService`，**解耦可独立测试**
 - 异常**绝不抛给 LLM**——返回空字段，让 LLM 自然告诉用户「未找到订单」
 
@@ -217,9 +217,9 @@ public void cancelBooking(...) {
 graph LR
     A[本模块用到的能力] --> B[System Prompt<br/>第2站 chat 学过]
     A --> C[ChatClient Fluent API<br/>第1-2站 学过]
-    A --> D[Function Bean 工具<br/>第5站 方式④ 学过]
-    A --> E[PromptChatMemoryAdvisor<br/>第4站 memory 学过]
-    A --> F[QuestionAnswerAdvisor RAG<br/>第12站 rag 学过]
+    A --> D[Function Bean 工具<br/>第6站 方式④ 学过]
+    A --> E[PromptChatMemoryAdvisor<br/>第5站 memory 学过]
+    A --> F[QuestionAnswerAdvisor RAG<br/>第13站 rag-example 学过]
     A --> G[流式 Flux<br/>第2站 stream 学过]
     A --> H[SimpleLoggerAdvisor<br/>第2站 学过]
 
@@ -230,7 +230,7 @@ graph LR
 
 ## 七、两种 RAG 对比（关键认知）
 
-| | 第12站 rag-agent | 本模块 QuestionAnswerAdvisor |
+| | 第14站 rag-agent | 本模块 QuestionAnswerAdvisor |
 |---|---|---|
 | 类型 | Agentic RAG | 传统 RAG |
 | 检索触发 | Agent 自主决定 | 每次请求自动检索 |

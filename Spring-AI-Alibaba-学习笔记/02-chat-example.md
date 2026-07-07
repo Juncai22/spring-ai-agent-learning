@@ -1,6 +1,6 @@
-# 模块二：chat-example —— 调用层全解
+﻿# 模块二：chat-example —— 调用层全解
 
-> [← 返回索引](./README.md) | [← 上一模块：helloworld](./01-helloworld.md) | [下一模块：structured-example →](./03-structured-example.md)
+> [← 返回索引](./README.md) | [← 上一模块：helloworld](./01-helloworld.md) | [下一模块：prompt-example →](./03-prompt-example.md)
 
 ---
 

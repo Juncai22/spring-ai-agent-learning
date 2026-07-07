@@ -1,6 +1,6 @@
-# 模块三：structured-example —— 结构化输出
+﻿# 模块四：structured-example —— 结构化输出
 
-> [← 返回索引](./README.md) | [← 上一模块：chat-example](./02-chat-example.md) | [下一模块：chat-memory-example →](./04-chat-memory-example.md)
+> [← 返回索引](./README.md) | [← 上一模块：prompt-example](./03-prompt-example.md) | [下一模块：chat-memory-example →](./05-chat-memory-example.md)
 
 ---
 

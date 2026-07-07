@@ -1,6 +1,6 @@
-# 模块十二：rag-agent-example —— ReAct + 检索增强
+﻿# 模块十四：rag-agent-example —— ReAct + 检索增强
 
-> [← 返回索引](./README.md) | [← 上一模块：four-paradigm-combined](./11-four-paradigm-combined.md)
+> [← 返回索引](./README.md) | [← 上一模块：rag-example](./13-rag-example.md) | [下一模块：playground-flight-booking →](./15-playground-flight-booking.md)
 
 ---
 
@@ -31,9 +31,9 @@ Agentic RAG (本例, Agent 自主决策):
 实际的 RAG:    ReAct + 检索工具 (和"ReAct + 文件工具"结构完全一样)
 ```
 
-对比第6站 react-agent：
+对比第7站 react-agent：
 
-| | 第6站 react-agent | 本站 rag-agent |
+| | 第7站 react-agent | 本站 rag-agent |
 |---|---|---|
 | Agent | ReactAgent | ReactAgent |
 | 工具 | file_read / file_write | knowledge_retrieval |
@@ -131,7 +131,7 @@ public ReactAgent ragAgent() throws GraphStateException {
 }
 ```
 
-**就这么简单**——一个 ReactAgent + 一个检索工具。对比第6站 react-agent 的配置，结构一模一样，只是工具换了。**这就是「RAG 是 ReAct 的工具」的铁证**。
+**就这么简单**——一个 ReactAgent + 一个检索工具。对比第7站 react-agent 的配置，结构一模一样，只是工具换了。**这就是「RAG 是 ReAct 的工具」的铁证**。
 
 ### How：Agent 的 ReAct 循环（RAG 版）
 
@@ -150,7 +150,7 @@ public ReactAgent ragAgent() throws GraphStateException {
      → 输出最终回答: "在 application.yml 配置 spring.ai.dashscope.api-key..."
 ```
 
-**这就是 ReAct 循环**——LLM 决定调工具、看结果、决定再调或输出。和第6站完全一样的机制，只是工具是检索。
+**这就是 ReAct 循环**——LLM 决定调工具、看结果、决定再调或输出。和第7站完全一样的机制，只是工具是检索。
 
 ## 四、代码逐行解析（KnowledgeRetrievalTool）
 
@@ -217,12 +217,12 @@ public class KnowledgeRetrievalTool implements BiFunction<Request, ToolContext, 
 
 | 模块 | Agent | 工具 | 范式 |
 |------|-------|------|------|
-| 第6站 react-agent | ReactAgent | file_read/file_write | ReAct |
-| 第9站 llm-auditor | SequentialAgent | web_search | Reflection |
-| 第10站 subagent | ReactAgent (Supervisor) | 子 Agent | Supervisor |
+| 第7站 react-agent | ReactAgent | file_read/file_write | ReAct |
+| 第10站 llm-auditor | SequentialAgent | web_search | Reflection |
+| 第11站 subagent | ReactAgent (Supervisor) | 子 Agent | Supervisor |
 | **本站 rag-agent** | **ReactAgent** | **knowledge_retrieval** | **ReAct (RAG 变体)** |
 
-**本站就是第6站的变体**——同样的 ReactAgent，工具换成检索。
+**本站就是第7站的变体**——同样的 ReactAgent，工具换成检索。
 
 ## 七、关键认知
 
@@ -234,11 +234,11 @@ public class KnowledgeRetrievalTool implements BiFunction<Request, ToolContext, 
 | 为什么切块？ | 长 document 匹配不准 + 超 token |
 | Agent 怎么知道何时检索？ | 看 toolCallback 的 description |
 | 和 chat-memory 区别？ | RAG 查外部知识，memory 查历史对话 |
-| 本站和第6站区别？ | 只是工具不同（file → retrieval）|
+| 本站和第7站区别？ | 只是工具不同（file → retrieval）|
 
 ## 八、总结
 
-- **核心认知**：RAG 不是独立范式，是 ReAct + 检索工具，结构同第6站
+- **核心认知**：RAG 不是独立范式，是 ReAct + 检索工具，结构同第7站
 - **Agentic RAG**：Agent 自主决定要不要检索、查什么、查几次，比传统 RAG 智能
 - **向量检索原理**：文本 → EmbeddingModel → 向量 → 余弦相似度 → topK
 - **两阶段**：启动建索引（抓文档→切块→向量化→存库）+ 运行时检索（query→向量→搜索）

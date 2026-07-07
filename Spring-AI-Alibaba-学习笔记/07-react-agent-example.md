@@ -1,6 +1,6 @@
-# 模块六：react-agent-example —— ReAct 智能体
+﻿# 模块七：react-agent-example —— ReAct 智能体
 
-> [← 返回索引](./README.md) | [← 上一模块：tool-calling-example](./05-tool-calling-example.md) | [下一模块：graph-example/react →](./07-graph-react.md)
+> [← 返回索引](./README.md) | [← 上一模块：tool-calling-example](./06-tool-calling-example.md) | [下一模块：graph-example/react →](./08-graph-react.md)
 
 ---
 

@@ -1,6 +1,6 @@
-# 模块五：tool-calling-example —— 让 AI 调用代码
+﻿# 模块六：tool-calling-example —— 让 AI 调用代码
 
-> [← 返回索引](./README.md) | [← 上一模块：chat-memory-example](./04-chat-memory-example.md) | [下一模块：react-agent-example →](./06-react-agent-example.md)
+> [← 返回索引](./README.md) | [← 上一模块：chat-memory-example](./05-chat-memory-example.md) | [下一模块：react-agent-example →](./07-react-agent-example.md)
 
 ---
 

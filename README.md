@@ -1,6 +1,6 @@
 # Spring AI Alibaba Examples
 
-学Spring AI
+> 学习Spring AI ，学习Java Agent开发，这个就足够了！！
 
 > Spring AI Alibaba Repo: https://github.com/alibaba/spring-ai-alibaba
 >
@@ -24,7 +24,7 @@
 
 ### 学习节奏（个人记录）
 
-> ⏱ **预估约 3 天时间能把主线程学完**（Hello World → Chat / Tool Calling → ReAct / Reflection / Supervisor / ParallelNode → Graph / Playground 综合实战），期间每个核心节点都会留下注释和笔记。
+> ⏱ **预估约 3 天时间能把主线程学完**（Hello World → Chat → Prompt → Structured Output → Memory → Tool Calling → ReAct / Reflection / Supervisor / ParallelNode → 基础 RAG / RAG Agent → Playground 综合实战），期间每个核心节点都会留下注释和笔记。
 
 > 如果你只是想查看官方示例本身，请直接访问上游仓库；本仓库更偏向**"带着注释的学习版"**，适合和我一样正在系统学习 Spring AI 生态的同学参考。
 
@@ -44,6 +44,7 @@
 |---|---|---|---|---|---|---|
 | spring-ai-alibaba-helloworld | basic chat and advisor examples | `mvn -pl spring-ai-alibaba-helloworld spring-boot:run` | none | `AI_DASHSCOPE_API_KEY` | — | [README](./spring-ai-alibaba-helloworld/README.md) |
 | spring-ai-alibaba-chat-example/dashscope-chat | DashScope chat basics | `mvn -pl spring-ai-alibaba-chat-example/dashscope-chat spring-boot:run` | none | `AI_DASHSCOPE_API_KEY` | — | [README](./spring-ai-alibaba-chat-example/dashscope-chat/README.md) |
+| spring-ai-alibaba-prompt-example | prompt templates and context stuffing | `mvn -pl spring-ai-alibaba-prompt-example spring-boot:run` | none | `AI_DASHSCOPE_API_KEY` | — | [README](./spring-ai-alibaba-prompt-example/README.md) |
 | spring-ai-alibaba-image-example/dashscope-image | DashScope image generation | `mvn -pl spring-ai-alibaba-image-example/dashscope-image spring-boot:run` | none | `AI_DASHSCOPE_API_KEY` | — | [README](./spring-ai-alibaba-image-example/dashscope-image/README.md) |
 | spring-ai-alibaba-mcp-example | MCP demo | `mvn -pl spring-ai-alibaba-mcp-example spring-boot:run` | none/local mcp tool | model api key | [`.env.example`](./spring-ai-alibaba-mcp-example/.env.example) | [README](./spring-ai-alibaba-mcp-example/README.md) |
 | spring-ai-alibaba-rag-example | RAG demo | `mvn -pl spring-ai-alibaba-rag-example spring-boot:run` | vector db (optional by profile) | model api key, embedding model | [`.env.example`](./spring-ai-alibaba-rag-example/.env.example) | [README](./spring-ai-alibaba-rag-example/README.md) |
